@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.4",
     "ride-backend": "file:",
+    "serverless-http": "^3.2.0",
     "twilio": "^5.4.0"
   }
 }
