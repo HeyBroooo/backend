@@ -8,6 +8,7 @@ const userRoutes = require('./routes/user.routes');
 const cookieParser = require('cookie-parser');
 
 
+
 connectToDb();
 app.use(cors());
 app.use(express.json());
