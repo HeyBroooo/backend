@@ -23,7 +23,7 @@ phoneVerificationSchema.methods.generateAuthToken = function () {
 };
 
 const phoneVerificationModel = mongoose.model(
-  "phoneVerification",
+  "user",
   phoneVerificationSchema
 );
 

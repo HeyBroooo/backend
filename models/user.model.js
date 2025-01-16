@@ -2,23 +2,26 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+/**
+ * User Schema and Model
+ */
 const userSchema = new mongoose.Schema({
   fullname: {
     firstname: {
       type: String,
-      required: true,
+      required: [true, "First name is required"],
       minlength: [3, "First name must be at least 3 characters long"],
+      trim: true,
     },
-
     lastname: {
       type: String,
       minlength: [3, "Last name must be at least 3 characters long"],
+      trim: true,
     },
   },
-
   email: {
     type: String,
-    required: true,
+    required: [true, "Email is required"],
     unique: true,
     lowercase: true,
     minlength: [5, "Email must be at least 5 characters long"],
@@ -29,33 +32,36 @@ const userSchema = new mongoose.Schema({
       message: (props) => `${props.value} is not a valid email address`,
     },
   },
-
   password: {
     type: String,
-    required: true,
+    required: [true, "Password is required"],
     select: false,
   },
 });
 
+// Instance Methods
 userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
-  return token;
+  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 userSchema.methods.comparePassword = async function (password) {
-  return await bcrypt.compare(password, this.password);
+  return bcrypt.compare(password, this.password);
 };
 
-userSchema.statics.hashPassword = async function (password) {
-  return await bcrypt.hash(password, 10);
+// Static Methods
+userSchema.methods.hashPassword = async function (password) {
+  return bcrypt.hash(password, 10);
 };
 
-const userModel = mongoose.model("user", userSchema);
+const UserModel = mongoose.model("User", userSchema);
 
-const phoneModel = new mongoose.Schema({
+/**
+ * Phone Verification Schema and Model
+ */
+const phoneSchema = new mongoose.Schema({
   phoneNo: {
     type: String,
-    required: true,
+    required: [true, "Phone number is required"],
     unique: true,
     validate: {
       validator: function (value) {
@@ -64,18 +70,22 @@ const phoneModel = new mongoose.Schema({
       message: (props) => `${props.value} is not a valid phone number`,
     },
   },
-
   otp: {
     type: String,
-    required: true,
+    required: [true, "OTP is required"],
     minlength: [4, "OTP must be 4 characters long"],
     maxlength: [4, "OTP must be 4 characters long"],
   },
 });
 
-phoneModel.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
-  return token;
+// Instance Methods
+phoneSchema.methods.generateAuthToken = function () {
+  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
-module.exports = userModel;
+const PhoneVerificationModel = mongoose.model("PhoneVerification", phoneSchema);
+
+module.exports = {
+  UserModel,
+  PhoneVerificationModel,
+};

@@ -9,7 +9,8 @@ const cookieParser = require('cookie-parser');
 
 
 const app = express();
-connectToDb();
+connectToDb;
+console.log("...............",connectToDb)
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

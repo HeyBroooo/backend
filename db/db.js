@@ -1,13 +1,32 @@
-const mongoose = require('mongoose');
+const admin = require("firebase-admin");
 
-function connectToDb () {
-    mongoose.connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log('Connected to database');
-    })
-    .catch((error) => {
-        console.log('Error connecting to database', error);
-    });
+let isFirebaseInitialized = false;
+
+function connectToDb() {
+    if (!isFirebaseInitialized) {
+        try {
+            const serviceAccount = require("../config/backend-d78ea-firebase-adminsdk-197sg-a6d07a358f.json");
+            console.log("Connecting to Firebase Realtime Database.........", serviceAccount);
+
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount),
+                databaseURL: "https://backend-d78ea-default-rtdb.firebaseio.com",
+            });
+
+            isFirebaseInitialized = true;
+            console.log("Connected to Firebase Realtime Database.........");
+        } catch (error) {
+            console.error("Error connecting to Firebase Realtime Database:..............", error);
+        }
+    } else {
+        console.log("Firebase is already initialized.");
+    }
 }
 
-module.exports = connectToDb;
+// Initialize Firebase before accessing db
+connectToDb();
+
+// Access the database only after initialization
+const db = admin.database();
+
+module.exports = { connectToDb, db };

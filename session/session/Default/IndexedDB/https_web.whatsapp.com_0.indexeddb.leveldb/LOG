@@ -1,0 +1,16 @@
+2025/01/16-19:56:05.041 3ee0 Reusing MANIFEST C:\Users\mohit\Desktop\backend\session\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/01/16-19:56:05.041 3ee0 Recovering log #678
+2025/01/16-19:56:05.064 3ee0 Reusing old log C:\Users\mohit\Desktop\backend\session\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000678.log 
+2025/01/16-19:56:05.064 3ee0 Delete type=2 #675
+2025/01/16-19:56:05.064 3ee0 Delete type=2 #676
+2025/01/16-19:56:06.855 3ee0 Level-0 table #684: started
+2025/01/16-19:56:06.862 3ee0 Level-0 table #684: 125488 bytes OK
+2025/01/16-19:56:06.863 3ee0 Delete type=0 #678
+2025/01/16-19:56:06.869 3ee0 Manual compaction at level-0 from '\x00\xc5\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\xc6\x00\x00\x00' @ 0 : 0; will stop at '\x00\xc5\x00\x00\x05' @ 567740 : 1
+2025/01/16-19:56:06.870 3ee0 Compacting 1@0 + 2@1 files
+2025/01/16-19:56:07.099 3ee0 Generated table #685@0: 130421 keys, 2297098 bytes
+2025/01/16-19:56:07.113 3ee0 Generated table #686@0: 8665 keys, 327720 bytes
+2025/01/16-19:56:07.113 3ee0 Compacted 1@0 + 2@1 files => 2624818 bytes
+2025/01/16-19:56:07.114 3ee0 compacted to: files[ 0 2 1 0 0 0 0 ]
+2025/01/16-19:56:07.114 3ee0 Delete type=2 #684
+2025/01/16-19:56:07.114 3ee0 Manual compaction at level-0 from '\x00\xc5\x00\x00\x05' @ 567740 : 1 .. '\x00\xc6\x00\x00\x00' @ 0 : 0; will stop at (end)
