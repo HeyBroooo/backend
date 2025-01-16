@@ -23,10 +23,8 @@ function connectToDb() {
     }
 }
 
-// Initialize Firebase before accessing db
 connectToDb();
 
-// Access the database only after initialization
 const db = admin.database();
 
 module.exports = { connectToDb, db };

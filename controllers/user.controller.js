@@ -16,7 +16,6 @@ const userRef = db.ref("UserDataBase"); // Reference to the Firebase Realtime Da
 
 const TwilioClient = require("twilio")(accountSid, authToken);
 
-// Initialize WhatsApp client
 const client = new Client({
   authStrategy: new LocalAuth({ dataPath: "./session" }),
 });
@@ -38,7 +37,6 @@ client.on("disconnected", (reason) => {
 
 client.initialize();
 
-// Helper function to validate inputs
 const handleValidationErrors = (req) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -47,7 +45,6 @@ const handleValidationErrors = (req) => {
   return { isValid: true };
 };
 
-// Register a new user
 module.exports.registerUser = async (req, res) => {
   const validation = handleValidationErrors(req);
   if (!validation.isValid) {
@@ -57,16 +54,14 @@ module.exports.registerUser = async (req, res) => {
   try {
       const { fullname, email, password } = req.body;
 
-      // const hashPassword = await bcrypt.hash(password, 10); // Hash the password once
 
       const user = await userService.createUser({
           firstname: fullname.firstname,
           lastname: fullname.lastname,
           email,
-          password: password,  // Store the hashed password in the DB
+          password: password,  
       });
 
-      // const token = jwt.sign({ _id: user.userId }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
       res.status(201).json({ user });
   } catch (error) {
@@ -76,7 +71,6 @@ module.exports.registerUser = async (req, res) => {
 };
 
 
-// Log in an existing user
 module.exports.loginUser = async (req, res) => {
   const validation = handleValidationErrors(req);
   if (!validation.isValid) {
@@ -99,11 +93,9 @@ module.exports.loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    // Generate JWT tokens
     const token = jwt.sign({ _id: userDataKey }, process.env.JWT_SECRET, { expiresIn: "1h" });
     const refreshToken = jwt.sign({ _id: userDataKey }, process.env.JWT_SECRET, { expiresIn: "1y" });
 
-    // Save refresh token to the database
     await db.ref(`UserDataBase/${userDataKey}`).update({ refreshToken });
 
     res.status(200).json({ token, user: userData, refreshToken });
@@ -116,7 +108,6 @@ module.exports.loginUser = async (req, res) => {
 
 
 
-// Send OTP via Twilio
 module.exports.sendOtp = async (req, res) => {
   try {
     const { phoneNo } = req.body;
@@ -167,7 +158,6 @@ Please use this code to complete your verification process.`;
 
 
 
-// Send OTP via WhatsApp
 module.exports.sendWhatsAppOtp = async (req, res) => {
   try {
     const { phoneNo } = req.body;
@@ -196,7 +186,6 @@ module.exports.verifyOtp = async (req, res) => {
   try {
     const { phoneNo, email, otp } = req.body;
 
-    // Validate input
     if (!otp || (!phoneNo && !email)) {
       return res.status(400).json({ message: "OTP and either phone number or email are required." });
     }
@@ -205,43 +194,36 @@ module.exports.verifyOtp = async (req, res) => {
     let userKey;
 
     if (phoneNo) {
-      // Query by phone number
       snapshot = await userRef
         .orderByChild("phoneNo")
         .equalTo(phoneNo)
         .once("value");
     } else if (email) {
-      // Query by email
       snapshot = await userRef
         .orderByChild("email")
         .equalTo(email)
         .once("value");
     }
 
-    // Check if the user exists
     if (!snapshot.exists()) {
       return res.status(400).json({ message: "Invalid OTP or credentials." });
     }
 
-    // Extract user data and key
-    userKey = Object.keys(snapshot.val())[0]; // Get the unique key of the user
+    userKey = Object.keys(snapshot.val())[0]; 
     const userData = snapshot.val()[userKey];
 
-    // Validate OTP
     if (userData.otp !== otp) {
       return res.status(400).json({ message: "Invalid OTP." });
     }
 
-    // Generate tokens
     const token = jwt.sign({ userId: userKey }, process.env.JWT_SECRET, {
-      expiresIn: "1h", // Access token valid for 1 hour
+      expiresIn: "1h", 
     });
 
     const refreshToken = jwt.sign({ userId: userKey }, process.env.JWT_SECRET, {
-      expiresIn: "1y", // Refresh token valid for 1 year
+      expiresIn: "1y", 
     });
 
-    // Update refreshToken in the database
     await db.ref(`UserDataBase/${userKey}`).update({ refreshToken });
 
     console.log(`OTP Verified: ${otp}, PhoneNo/Email: ${phoneNo || email}`);
@@ -257,7 +239,6 @@ module.exports.verifyOtp = async (req, res) => {
 };
 
 
-// Get User Profile
 
 module.exports.getUserProfile = async (req, res) => {
   try {

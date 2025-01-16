@@ -2,9 +2,6 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-/**
- * User Schema and Model
- */
 const userSchema = new mongoose.Schema({
   fullname: {
     firstname: {
@@ -39,7 +36,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// Instance Methods
 userSchema.methods.generateAuthToken = function () {
   return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
@@ -48,16 +44,13 @@ userSchema.methods.comparePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-// Static Methods
 userSchema.methods.hashPassword = async function (password) {
   return bcrypt.hash(password, 10);
 };
 
 const UserModel = mongoose.model("User", userSchema);
 
-/**
- * Phone Verification Schema and Model
- */
+
 const phoneSchema = new mongoose.Schema({
   phoneNo: {
     type: String,
@@ -78,7 +71,6 @@ const phoneSchema = new mongoose.Schema({
   },
 });
 
-// Instance Methods
 phoneSchema.methods.generateAuthToken = function () {
   return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
